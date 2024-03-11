@@ -1,20 +1,17 @@
 import OpenAI from "openai";
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: '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',
   timeout: 5 * 1000,
 });
 
 async function main() {
-  try{
-    const completion = await openai.chat.completions.create({
-      messages: [{ role: "system", content: "You are a helpful assistant." }],
-      model: "gpt-3.5-turbo",
-    },);
-
-    console.log(completion.choices[0]);
-  }
-  catch (err){
-    console.log(err);
+  const stream = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: 'Say this is a test' }],
+    stream: true,
+  });
+  for await (const chunk of stream) {
+    process.stdout.write(chunk.choices[0]?.delta?.content || '');
   }
 }
 
